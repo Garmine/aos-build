@@ -5,9 +5,9 @@ IDIR=""
 function aclean(){
     echo "Cleaning build directory..."
     cd build
-    rm -f *.Obj LinuxAosCore AOS*Log .aoshome
-    cd NewAos
     rm -f AOS*Log .aoshome
+    cd NewAos
+    rm -f *.Obj LinuxAosCore AOS*Log .aoshome
     cd $IDIR
 }
 
