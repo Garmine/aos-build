@@ -1,15 +1,21 @@
 #!/bin/bash
 
+IDIR=""
+
 function aclean(){
     echo "Cleaning build directory..."
-    cd build/NewAos
+    cd build
     rm -f *.Obj LinuxAosCore AOS*Log .aoshome
+    cd NewAos
+    rm -f AOS*Log .aoshome
+    cd $IDIR
 }
 
 function apull(){
     echo "Pulling newest AOS..."
     cd ethzoberonmirror
     git pull
+    cd $IDIR
 }
 
 function abuild(){
@@ -24,16 +30,19 @@ function abuild(){
     echo "Linking aos..."
     aos -x "" #TODO
 
-    if [ ! -f build/NewAos/LinuxAosCore ]; then
+    if [ ! -f NewAos/LinuxAosCore ]; then
         echo "Error: LinuxAosCore was not found! Something gone terribly wrong!"
         exit 1
     fi
+
+    cd $IDIR
 }
 
 function atest(){
     echo "Testing aos..."
     if [ -f build/NewAos/LinuxAosCore ]; then
         cd build/NewAos && aos
+        cd $IDIR
     else
         echo "LinuxAosCore was not found! Please build first!"
         exit 1
@@ -46,6 +55,7 @@ function adeploy(){
         cd build/NewAos
         sudo rm /usr/aos/obj/*
         sudo cp *.Obj LinuxAosCore /usr/aos/obj/
+        cd $IDIR
     else
         echo "LinuxAosCore was not found! Please build first!"
         exit 1
@@ -69,6 +79,9 @@ function main(){
         echo "Please run init.sh first!"
 #        exit 1
     fi
+
+    #Installation directory
+    IDIR=$PWD
 
     #Default: clean, pull, build and deploy
     params="cpbd"
